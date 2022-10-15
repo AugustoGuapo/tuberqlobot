@@ -53,7 +53,7 @@ client.on('interactionCreate', (int) =>{
 client.on('messageCreate', async message => {
     if(message.author.bot || !message.guild) return;
 
-    const prefix = '&';
+    const prefix = config.prefix;
     const args = message.content.slice(prefix.length).trim().split(/ +/g);
 
     if(!message.content.toLocaleLowerCase().startsWith(prefix)) return;
