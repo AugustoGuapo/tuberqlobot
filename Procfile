@@ -1,1 +1,1 @@
-Worker: node ./main.jsher
+Worker: node ./main.js
