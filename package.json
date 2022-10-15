@@ -1,0 +1,14 @@
+{
+  "name": "discord-bot",
+  "version": "1.0.0",
+  "description": "bot pa poner yutu en un server con los panas",
+  "main": "main.js",
+  "scripts": {
+    "test": "node ."
+  },
+  "author": "Augusto Diaz",
+  "license": "ISC",
+  "dependencies": {
+    "discord.js": "^14.6.0"
+  }
+}
