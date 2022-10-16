@@ -61,6 +61,7 @@ client.on('messageCreate', async message => {
     const comm = args.shift().toLowerCase();
 
     if(comm === 'jugar') {
+        if(args.join(" ") === "") return message.channel.send('no soi tonto eso ta basio');
         client.distube.play(message.member.voice.channel, args.join(" "), {
             member: message.member,
             textChannel: message.channel,
