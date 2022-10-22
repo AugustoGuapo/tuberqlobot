@@ -1,4 +1,4 @@
-require('http').createServer((req, res) => res.end('Hola')).listen();
+require("dotenv").config();
 
 //const { discord, Client, GatewayIntentBits } = require("discord.js");
 
@@ -138,4 +138,4 @@ client.distube
   )
   .on('finish', queue => queue.textChannel.send('seaca bo'))
 
-client.login(config.token);
+client.login(process.env.TOKEN);
