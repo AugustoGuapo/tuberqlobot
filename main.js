@@ -18,6 +18,8 @@ const client = new Discord.Client({
 });
 config = require("./config.json");
 client.emotes = config.emoji;
+
+const { SpotifyPlugin } = require('@distube/spotify')
 const prefix = '!';
 
 client.once('ready', () => {
@@ -34,10 +36,15 @@ client.once('ready', () => {
 const  Distube  = require('distube');
 
 client.distube = new Distube.default(client, {
-    leaveOnStop: false,
+    leaveOnStop: true,
     emitNewSongOnly: true,
     emitAddSongWhenCreatingQueue: false,
-    emitAddListWhenCreatingQueue: false
+    emitAddListWhenCreatingQueue: false,
+    plugins: [
+      new SpotifyPlugin({
+        emitEventsAfterFetching: true
+      })
+    ]
 });
 
 client.on('interactionCreate', (int) =>{
@@ -125,7 +132,7 @@ client.distube
     if (channel) channel.send(`${client.emotes.error} | ubo un error llamen a la polisia: ${e.toString().slice(0, 1974)}`)
     else console.error(e)
   })
-  .on('empty', channel => channel.send('nome gusta estar solo adio'))
+  .on('empty', (channel, queue) => queue.textChannel.send('nome gusta estar solo adio'))
   .on('searchNoResult', (message, query) =>
     message.channel.send(`${client.emotes.error} | no encontré na \`${query}\`!`)
   )
