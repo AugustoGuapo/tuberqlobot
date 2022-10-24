@@ -29,6 +29,11 @@ client.once('ready', () => {
             name: 'ping',
             description: 'dice pong',
             options: [],
+        },
+        {
+            name: 'ayua',
+            description: 'Información general sobre todos los comandos',
+            options: []
         }
     ])
 });
@@ -36,7 +41,7 @@ client.once('ready', () => {
 const  Distube  = require('distube');
 
 client.distube = new Distube.default(client, {
-    leaveOnStop: true,
+    leaveOnStop: false,
     emitNewSongOnly: true,
     emitAddSongWhenCreatingQueue: false,
     emitAddListWhenCreatingQueue: false,
@@ -55,6 +60,9 @@ client.on('interactionCreate', (int) =>{
     if(command === 'ping') {
         int.reply('Pong!');
     }
+    else if(command === 'ayua') {
+        int.reply(config.ayuda);
+    }
 })
 
 client.on('messageCreate', async message => {
@@ -69,6 +77,7 @@ client.on('messageCreate', async message => {
 
     if(comm === 'jugar') {
         if(args.join(" ") === "") return message.channel.send('no soi tonto eso ta basio');
+        if(!message.member.voice.channel) return message.channel.send('entra en un canal primero tonto')
         client.distube.play(message.member.voice.channel, args.join(" "), {
             member: message.member,
             textChannel: message.channel,
@@ -100,11 +109,26 @@ client.on('messageCreate', async message => {
           message.channel.send(`${client.emotes.error} | ${e}`)
         }        
     }
+    else if(comm === 'volumen') {
+        const queue = client.distube.getQueue(message)
+        if (!queue) return message.channel.send(`${client.emotes.error} | cin cola no puedo cambiar el bolumne`)
+        const volume = parseInt(args[0])
+        if (isNaN(volume) || volume > 100) return message.channel.send(`${client.emotes.error} | mete un numero k sirba tonto`)
+        queue.setVolume(volume)
+        message.channel.send(`${client.emotes.success} | listo tu bolumne aora e: \`${volume}\``)
+    }
+
+    else if(comm === 'adio') {
+      
+      const voiceChannel = message.member.voice.channel;
+      if(!voiceChannel) return message.channel.send('weje no estoi en ningun canal :p')
+      
+  
+      message.channel.send('ok m boi >:(').then(() => {
+        client.distube.voices.leave(message)
+      }).catch(error => console.log(error));
+    }
 })
-/*
-client.distube.on("playSong", (queue, song) => {
-    queue.textChannel.send("ute ta ecuchando: " + song.name)
-})*/
 
 const status = queue =>
   `👍`

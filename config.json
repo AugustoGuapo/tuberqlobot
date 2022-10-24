@@ -1,6 +1,7 @@
 {
+    "ayuda" : "El prefijo de este bot es el signo &, debe anteceder todos los comandos para que puedan ser reconocidos\nCOMANDOS:\njugar: se utiliza para la reproducción de música, para su uso debes estar primero en un canal de voz, puedes pasar tanto el título como el enlace a la canción. Las plataformas soportadas actualmente son: YouTube, Spotify. Ejemplo de uso: &jugar 'titulo o enlace'\nskip: salta a la siguiente canción de la playlist\ndetener: para por completo la música y boora la cola de reproducción\npausa: detiene momentaneamente la música, para reanudar la reproducción puedes volver a escribir el mismo comando\nadio: saca al bot del canal",
     "prefix": "&",
-    "token": "MTAzMDcwNzg5ODI1MjI3MTY1Nw.GUhNi3.QcWjmCc47LAJ3h9hTqmqRJjgCjqTgQZyerw4S4",
+    "token": "Here could be your token but I don't recommend it",
     "emoji": {
       "play": "▶️",
       "stop": "⏹️",
@@ -9,5 +10,6 @@
       "repeat": "🔁",
       "error": "❌"
     }
+    
   }
   
