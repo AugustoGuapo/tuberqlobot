@@ -113,7 +113,7 @@ client.on('messageCreate', async message => {
         const queue = client.distube.getQueue(message)
         if (!queue) return message.channel.send(`${client.emotes.error} | cin cola no puedo cambiar el bolumne`)
         const volume = parseInt(args[0])
-        if (isNaN(volume) || volume > 100) return message.channel.send(`${client.emotes.error} | mete un numero k sirba tonto`)
+        if (isNaN(volume) || volume > 100 || volumen < 0) return message.channel.send(`${client.emotes.error} | mete un numero k sirba tonto`)
         queue.setVolume(volume)
         message.channel.send(`${client.emotes.success} | listo tu bolumne aora e: \`${volume}\``)
     }
