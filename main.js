@@ -74,10 +74,9 @@ client.on('messageCreate', async message => {
     if(!message.content.toLocaleLowerCase().startsWith(prefix)) return;
 
     const comm = args.shift().toLowerCase();
-
+    if(!message.member.voice.channel) return message.channel.send('entra en un canal primero tonto')
     if(comm === 'jugar') {
         if(args.join(" ") === "") return message.channel.send('no soi tonto eso ta basio');
-        if(!message.member.voice.channel) return message.channel.send('entra en un canal primero tonto')
         client.distube.play(message.member.voice.channel, args.join(" "), {
             member: message.member,
             textChannel: message.channel,
