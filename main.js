@@ -119,7 +119,7 @@ client.on('messageCreate', async message => {
 
     else if(comm === 'adio') {
       
-      const voiceChannel = message.member.voice.channel;
+      const voiceChannel = client.distube.voices.channelId
       if(!voiceChannel) return message.channel.send('weje no estoi en ningun canal :p')
       
   
