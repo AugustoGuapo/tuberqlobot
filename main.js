@@ -74,8 +74,9 @@ client.on('messageCreate', async message => {
     if(!message.content.toLocaleLowerCase().startsWith(prefix)) return;
 
     const comm = args.shift().toLowerCase();
-    if(!message.member.voice.channel) return message.channel.send('entra en un canal primero tonto')
+    //if(!message.member.voice.channel) return message.channel.send('entra en un canal primero tonto')
     if(comm === 'jugar') {
+        if (!message.member.voice.channel) return message.channel.send('entra en un canal primero tonto');
         if(args.join(" ") === "") return message.channel.send('no soi tonto eso ta basio');
         client.distube.play(message.member.voice.channel, args.join(" "), {
             member: message.member,
@@ -119,14 +120,45 @@ client.on('messageCreate', async message => {
 
     else if(comm === 'adio') {
       
-      const voiceChannel = client.distube.voices.channelId
+      if (!message.member.voice.channel) return message.channel.send('entra en un canal primero tonto')
+      const voiceChannel = client.distube.voices.get(message)
       if(!voiceChannel) return message.channel.send('weje no estoi en ningun canal :p')
       
-  
-      message.channel.send('ok m boi >:(').then(() => {
+      message.channel.send('ok m boi >:( ').then(() => {
         client.distube.voices.leave(message)
       }).catch(error => console.log(error));
     }
+
+    else if(comm == 'teamo') {
+      const randomNumber = Math.floor(Math.random() * 2)
+      const outputMessage = randomNumber === 1 ? 'yo ati <3': 'grasias'
+      return message.channel.send(outputMessage)
+    }
+
+    /* 
+    COMANDOS PARA HALLOWEEN
+     */
+
+    else if (comm === 'dulseotruco') {
+      const memberId = message.member.id
+      var outputMessage = memberId == '250464961418100737' || memberId == '289579426365177856' ? 'dulse x wapo':'truco x feo'
+      outputMessage = memberId == '514162096733159424' ? 'dulse x wapa': outputMessage
+      return message.channel.send(outputMessage)
+    }
+
+    else if (comm === 'historia') {
+      return message.channel.send('eta era la istoria de un muchacho k migro de benesuela a islamdia i una noche sedur mio y los banpiros lo agarraron y lo deportaron 👻👻👻')
+    }
+
+    else if (comm === 'boo') {
+      return message.channel.send('👻boo👻')
+    }
+    else if (comm === 'peliculas') {
+      const peliculas = ['casper', 'el extraño mundo de jack', 'halloweentown', 'monster house', 'los cazafantasmas', 'el joven manos de tijera', 'el viaje de chihiro', 'matilda', 'kiki entregas a domicilio', 'el cadaver de la novia', 'coraline', 'coco', 'spooky buddies', 'frankenweenie', 'hotel transylvania', 'pocoyo halloween', 'la patrulla fantasma', 'malefica']
+      const randomNumber = Math.floor(Math.random() * peliculas.length)
+      return message.channel.send('mmmmmmm mi recomendasion como profecional de las peliculas es k beas: ' + peliculas[randomNumber])
+    }
+
 })
 
 const status = queue =>
