@@ -72,11 +72,14 @@ client.on('messageCreate', async message => {
     const args = message.content.slice(prefix.length).trim().split(/ +/g);
 
     if(!message.content.toLocaleLowerCase().startsWith(prefix)) return;
+    if(message.guild.id == "1030709067414511617") return message.channel.send('ayura toi secuestrao debuelban las waifus a mi creador D:');
 
     const comm = args.shift().toLowerCase();
-    //if(!message.member.voice.channel) return message.channel.send('entra en un canal primero tonto')
+    if(!message.member.voice.channel) return message.channel.send('entra en un canal primero tonto')
     if(comm === 'jugar') {
-        if (!message.member.voice.channel) return message.channel.send('entra en un canal primero tonto');
+        if (!message.member.voice.channel) {
+          return message.channel.send('entra en un canal primero tonto');
+        }
         if(args.join(" ") === "") return message.channel.send('no soi tonto eso ta basio');
         client.distube.play(message.member.voice.channel, args.join(" "), {
             member: message.member,
