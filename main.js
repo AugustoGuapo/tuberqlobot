@@ -141,7 +141,7 @@ client.on('messageCreate', async message => {
     /* 
     COMANDOS PARA HALLOWEEN
      */
-
+/*
     else if (comm === 'dulseotruco') {
       const memberId = message.member.id
       var outputMessage = memberId == '250464961418100737' || memberId == '289579426365177856' ? 'dulse x wapo':'truco x feo'
@@ -161,7 +161,7 @@ client.on('messageCreate', async message => {
       const randomNumber = Math.floor(Math.random() * peliculas.length)
       return message.channel.send('mmmmmmm mi recomendasion como profecional de las peliculas es k beas: ' + peliculas[randomNumber])
     }
-
+*/
 })
 
 const status = queue =>
