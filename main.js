@@ -71,12 +71,12 @@ client.on('voiceStateUpdate', (oldState, newState) => {
   if(queue != null){
     for (let index = 0; index < queue.songs.length; index++) {
       const element = queue.songs[index];
-      if(element.name === 'Mariah Carey - All I Want For Christmas Is You (Lyrics)') isQueued = true;
+      if(element.name === 'Mariah Carey - All I Want for Christmas Is You (Make My Wish Come True Edition)') isQueued = true;
   }
   }
 
   if(oldState.channel === null && !membersAlreadyPlayed.includes(memberId) && !isQueued) {
-    client.distube.play(oldState.member.voice.channel, 'All I want for christmas is you', {
+    client.distube.play(oldState.member.voice.channel, 'https://www.youtube.com/watch?v=aAkMkVFwAoo&ab_channel=MariahCareyVEVO', {
       member: oldState.member,
       textChannel: oldState.guild.channels.cache.find(channel => channel.name.toLowerCase() === 'general')
 
