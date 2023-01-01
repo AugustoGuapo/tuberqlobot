@@ -64,6 +64,7 @@ client.on('interactionCreate', (int) =>{
         int.reply(config.ayuda);
     }
 })
+/*
 client.on('voiceStateUpdate', (oldState, newState) => {
   const memberId = oldState.member.id
   const queue = client.distube.getQueue(oldState.member.guild.id)
@@ -84,7 +85,7 @@ client.on('voiceStateUpdate', (oldState, newState) => {
     membersAlreadyPlayed.push(memberId)
   }
 });
-
+*/
 client.on('messageCreate', async message => {
     if(message.author.bot || !message.guild) return;
 
