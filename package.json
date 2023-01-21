@@ -9,7 +9,7 @@
   "author": "Augusto Diaz",
   "license": "ISC",
   "dependencies": {
-    "@discordjs/opus": "^0.8.0",
+    "@discordjs/opus": "^0.9.0",
     "@discordjs/voice": "^0.13.0",
     "@distube/spotify": "^1.4.2",
     "@distube/ytdl-core": "^4.11.7",
