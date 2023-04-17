@@ -6,7 +6,6 @@ require("dotenv").config();
     intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages, GatewayIntentBits.GuildVoiceStates, GatewayIntentBits.MessageContent]
 });
 */
-var membersAlreadyPlayed = []
 const Discord = require('discord.js');
 const client = new Discord.Client({
     intents: [
@@ -20,7 +19,6 @@ config = require("./config.json");
 client.emotes = config.emoji;
 
 const { SpotifyPlugin } = require('@distube/spotify')
-const prefix = '!';
 
 client.once('ready', () => {
     console.log('el bot qlo ta listo po wn');
@@ -102,6 +100,7 @@ client.on('messageCreate', async message => {
     //COMANDOS DE MÚSICA
     if(musicCommands.includes(comm)){ //Verifica que el comando escrito sea de música
       if(isInChannel) { //Verifica que quien pidió el comando esté dentro de un canal de voz
+
         if(comm === 'jugar') {
           if(args.join(" ") === "") return message.channel.send('no soi tonto eso ta basio');
           client.distube.play(message.member.voice.channel, args.join(" "), {
@@ -234,7 +233,7 @@ client.distube
   .on('playSong', (queue, song) =>
     queue.textChannel.send(
       `${client.emotes.play} | ute ta ecuchando \`${song.name}\` - \`${song.formattedDuration}\`\nlapidio: ${
-        song.user
+        song.user.username
       }\n${status(queue)}`
     )
   )
