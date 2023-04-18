@@ -4,6 +4,7 @@
   "description": "bot pa poner yutu en un server con los panas",
   "main": "main.js",
   "scripts": {
+    "start": "node main.js",
     "test": "node ."
   },
   "author": "Augusto Diaz",
