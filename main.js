@@ -1,4 +1,7 @@
 require("dotenv").config();
+const express = require('express');
+const app = express();
+const app2 = express();
 
 //const { discord, Client, GatewayIntentBits } = require("discord.js");
 
@@ -19,6 +22,7 @@ config = require("./config.json");
 client.emotes = config.emoji;
 
 const { SpotifyPlugin } = require('@distube/spotify')
+var import_ytpl = require("@distube/ytpl")
 
 client.once('ready', () => {
     console.log('el bot qlo ta listo po wn');
@@ -100,14 +104,21 @@ client.on('messageCreate', async message => {
     //COMANDOS DE MÚSICA
     if(musicCommands.includes(comm)){ //Verifica que el comando escrito sea de música
       if(isInChannel) { //Verifica que quien pidió el comando esté dentro de un canal de voz
-
         if(comm === 'jugar') {
           if(args.join(" ") === "") return message.channel.send('no soi tonto eso ta basio');
-          client.distube.play(message.member.voice.channel, args.join(" "), {
+          if(args.includes("patricia") && args.includes("ramos")) return message.channel.send('k pedo con tus gustos saka d aki');
+          if(false) {
+
+          }
+          else {
+            client.distube.play(message.member.voice.channel, args.join(" "), {
               member: message.member,
               textChannel: message.channel,
               message
           })
+          
+          }
+          
     }
     else if (comm === 'pausa') {
         const queue = client.distube.getQueue(message)
@@ -124,7 +135,7 @@ client.on('messageCreate', async message => {
         if (!queue) return message.channel.send(`${client.emotes.error} | rebisa tu cola, esta está basia`)
         queue.stop()
         message.channel.send(`seaca bo`)
-    }else if(comm === 'skip') {
+    }else if(comm === 'skip' || comm === 'next') {
         const queue = client.distube.getQueue(message)
         if (!queue) return message.channel.send(`${client.emotes.error} | rebisa tu cola, esta está basia`)
         try {
@@ -223,24 +234,57 @@ client.on('messageCreate', async message => {
     else if (comm === 'regalo') {
       return message.member.send('toma tu regalo')
     }
+/*
+    function esPlaylist(url) {
+      const searchResults = resolvePlaylist(url)
+      return searchResults 
+    }
+    async function resolvePlaylist(playlist, options = {}) {
+      const { member, source, metadata } = { source: "youtube", ...options };
+      if (typeof playlist === "string") {
+        const info = await import_ytpl(playlist, { limit: Infinity });
+        const songs = info.items.filter((v) => !v.thumbnail.includes("no_thumbnail")).map((v) => new Distube.Song(v, { member, metadata }));
+        return new Distube.Playlist(
+          {
+            source,
+            songs,
+            member,
+            name: info.title,
+            url: info.url,
+            thumbnail: songs[0].thumbnail
+          },
+          { metadata }
+        );
+      }
+      //return new Distube.Playlist(playlist, { member, properties: { source }, metadata });
+    }
 
-
+*/
 })
 
 const status = queue =>
   `👍`
 client.distube
-  .on('playSong', (queue, song) =>
+  .on('playSong', (queue, song) => {
+  if(queue.songs[queue.songs.length-1].name.toLowerCase().includes("patricia ramos")) {
+    queue.textChannel.send("ijole no se ba a poder mijo")
+    queue.stop()
+  }
+  else {
     queue.textChannel.send(
       `${client.emotes.play} | ute ta ecuchando \`${song.name}\` - \`${song.formattedDuration}\`\nlapidio: ${
         song.user.username
       }\n${status(queue)}`
-    )
+    )}}
   )
-  .on('addSong', (queue, song) =>
+  .on('addSong', (queue, song) =>{
+  if(queue.songs[queue.songs.length-1].name.toLowerCase().includes("patricia ramos")){
+    queue.textChannel.send("ijole no se ba a poder mijo")
+    log.console(queue.songs.pop())
+  }else {
     queue.textChannel.send(
       `${client.emotes.success} | ceaña dió ${song.name} - \`${song.formattedDuration}\` a la cola x: ${song.user}`
-    )
+    )}}
   )
   .on('addList', (queue, playlist) =>
     queue.textChannel.send(
@@ -260,3 +304,19 @@ client.distube
   .on('finish', queue => queue.textChannel.send('seaca bo'))
 
 client.login(process.env.TOKEN);
+
+app.get('/', (req, res) => {
+  res.status(200).send('');
+});
+
+app.listen(8080, () => {
+  console.log('Servidor escuchando en el puerto 8080');
+});
+
+app2.get('/', (req, res) => {
+  res.status(200).send('');
+});
+
+app2.listen(443, () => {
+  console.log('Servidor escuchando en el puerto 443')
+});
