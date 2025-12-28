@@ -9,22 +9,25 @@ const app2 = express();
     intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages, GatewayIntentBits.GuildVoiceStates, GatewayIntentBits.MessageContent]
 });
 */
-const Discord = require('discord.js');
-const client = new Discord.Client({
+
+const { 
+  Client, 
+  GatewayIntentBits, 
+  Partials 
+} = require("discord.js");
+const client = new Client({
     intents: [
-        "Guilds",
-        "GuildMessages",
-        "GuildVoiceStates",
-        "MessageContent"
-    ]
+        GatewayIntentBits.Guilds,
+        GatewayIntentBits.GuildMessages,
+        GatewayIntentBits.GuildVoiceStates,
+        GatewayIntentBits.MessageContent
+  ],
+  partials: [Partials.Channel]
 });
 config = require("./config.json");
 client.emotes = config.emoji;
 
-const { SpotifyPlugin } = require('@distube/spotify')
-var import_ytpl = require("@distube/ytpl")
-
-client.once('ready', () => {
+client.once('clientReady', () => {
     console.log('el bot qlo ta listo po wn');
     client.application.commands.set([
         {
@@ -40,19 +43,8 @@ client.once('ready', () => {
     ])
 });
 
-const  Distube  = require('distube');
-
-client.distube = new Distube.default(client, {
-    leaveOnStop: false,
-    emitNewSongOnly: true,
-    emitAddSongWhenCreatingQueue: false,
-    emitAddListWhenCreatingQueue: false,
-    plugins: [
-      new SpotifyPlugin({
-        emitEventsAfterFetching: true
-      })
-    ]
-});
+// Replace DisTube with custom music engine
+const { play, skip, pause, resume, stop, setVolume, leave, getQueue } = require('./musicEngine.js');
 
 client.on('interactionCreate', (int) =>{
     if(!int.isCommand) return;
@@ -99,7 +91,7 @@ client.on('messageCreate', async message => {
 
     const comm = args.shift().toLowerCase();
     const isInChannel = message.member.voice.channel
-    const musicCommands = ['jugar', 'pausa', 'detener', 'skip', 'volumen', 'adio']
+    const musicCommands = ['jugar', 'pausa', 'detener', 'skip', 'volumen', 'adio', 'cola', 'limpiar']
     
     //COMANDOS DE MÚSICA
     if(musicCommands.includes(comm)){ //Verifica que el comando escrito sea de música
@@ -107,62 +99,42 @@ client.on('messageCreate', async message => {
         if(comm === 'jugar') {
           if(args.join(" ") === "") return message.channel.send('no soi tonto eso ta basio');
           if(args.includes("patricia") && args.includes("ramos")) return message.channel.send('k pedo con tus gustos saka d aki');
-          if(false) {
+          if (false) {
 
           }
+          
           else {
-            client.distube.play(message.member.voice.channel, args.join(" "), {
-              member: message.member,
-              textChannel: message.channel,
-              message
-          })
-          
+            const query = `${args.join(" ")}`;
+            play(message, query);
           }
-          
-    }
-    else if (comm === 'pausa') {
-        const queue = client.distube.getQueue(message)
-        if (!queue) return message.channel.send(`${client.emotes.error} | rebisa tu cola, esta está basia`)
-        if (queue.paused) {
-          queue.resume()
-          return message.channel.send('ya ta sonando otra be :)')
         }
-        queue.pause()
-        message.channel.send('tomate tu tiempo :)')
+    else if (comm === 'pausa') {
+        pause(message);
     }
     else if (comm === 'detener') {
-        const queue = client.distube.getQueue(message)
-        if (!queue) return message.channel.send(`${client.emotes.error} | rebisa tu cola, esta está basia`)
-        queue.stop()
-        message.channel.send(`seaca bo`)
+        stop(message);
     }else if(comm === 'skip' || comm === 'next') {
-        const queue = client.distube.getQueue(message)
-        if (!queue) return message.channel.send(`${client.emotes.error} | rebisa tu cola, esta está basia`)
-        try {
-          const song = await queue.skip()
-          message.channel.send(`${client.emotes.success} | lasal te aora suena:\n${song.name}`)
-        } catch (e) {
-          message.channel.send(`${client.emotes.error} | ${e}`)
-        }        
+        skip(message);
     }
     else if(comm === 'volumen') {
-        const queue = client.distube.getQueue(message)
-        if (!queue) return message.channel.send(`${client.emotes.error} | cin cola no puedo cambiar el bolumne`)
         const volume = parseInt(args[0])
         if (isNaN(volume) || volume > 100 || volume < 0) return message.channel.send(`${client.emotes.error} | mete un numero k sirba tonto`)
-        queue.setVolume(volume)
-        message.channel.send(`${client.emotes.success} | listo tu bolumne aora e: \`${volume}\``)
+        setVolume(message, volume);
     }
 
     else if(comm === 'adio') {
-      
-      if (!message.member.voice.channel) return message.channel.send('entra en un canal primero tonto')
-      const voiceChannel = client.distube.voices.get(message)
-      if(!voiceChannel) return message.channel.send('weje no estoi en ningun canal :p')
-      
-      message.channel.send('ok m boi >:( ').then(() => {
-        client.distube.voices.leave(message)
-      }).catch(error => console.log(error));
+      leave(message);
+    }
+    else if(comm === 'cola') {
+      getQueue(message);
+    }
+    else if(comm === 'limpiar') {
+      const queue = getQueue(message.guild.id);
+      queue.songs = [];
+      queue.currentIndex = -1;
+      queue.playing = false;
+      if (queue.player) queue.player.stop();
+      message.channel.send('Cola limpiada.');
     }
       }
       else return message.channel.send('entra en un canal primero tonto') //Envía un mensaje si se usó un comando de música pero el usuario no está en ningun canal
@@ -261,47 +233,6 @@ client.on('messageCreate', async message => {
 
 */
 })
-
-const status = queue =>
-  `👍`
-client.distube
-  .on('playSong', (queue, song) => {
-  if(queue.songs[queue.songs.length-1].name.toLowerCase().includes("patricia ramos")) {
-    queue.textChannel.send("ijole no se ba a poder mijo")
-    queue.stop()
-  }
-  else {
-    queue.textChannel.send(
-      `${client.emotes.play} | ute ta ecuchando \`${song.name}\` - \`${song.formattedDuration}\`\nlapidio: ${
-        song.user.username
-      }\n${status(queue)}`
-    )}}
-  )
-  .on('addSong', (queue, song) =>{
-  if(queue.songs[queue.songs.length-1].name.toLowerCase().includes("patricia ramos")){
-    queue.textChannel.send("ijole no se ba a poder mijo")
-    log.console(queue.songs.pop())
-  }else {
-    queue.textChannel.send(
-      `${client.emotes.success} | ceaña dió ${song.name} - \`${song.formattedDuration}\` a la cola x: ${song.user}`
-    )}}
-  )
-  .on('addList', (queue, playlist) =>
-    queue.textChannel.send(
-      `${client.emotes.success} | ceaña dió \`${playlist.name}\` playlist (${
-        playlist.songs.length
-      } songs) a la cola\n${status(queue)}`
-    )
-  )
-  .on('error', (channel, e) => {
-    if (channel) channel.send(`${client.emotes.error} | ubo un error llamen a la polisia: ${e.toString().slice(0, 1974)}`)
-    else console.error(e)
-  })
-  .on('empty', (channel, queue) => queue.textChannel.send('nome gusta estar solo adio'))
-  .on('searchNoResult', (message, query) =>
-    message.channel.send(`${client.emotes.error} | no encontré na \`${query}\`!`)
-  )
-  .on('finish', queue => queue.textChannel.send('seaca bo'))
 
 client.login(process.env.TOKEN);
 
